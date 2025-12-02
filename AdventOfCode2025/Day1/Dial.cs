@@ -1,0 +1,47 @@
+﻿public class Dial(int initialVal, int numberCount)
+{
+    public int NumberCount { get; } = numberCount;
+
+    public int Value { get; private set; } = initialVal;
+
+    public int Zeroes { get; private set; } = 0;
+
+    public void ExecuteSequence(string[] directions)
+    {
+        foreach (var line in directions)
+        {
+            var dir = line[0];
+            var amount = int.Parse(line[1..]);
+            switch (dir)
+            {
+                case 'L':
+                    Left(amount);
+                    break;
+                case 'R':
+                    Right(amount);
+                    break;
+            }
+        }
+    }
+
+    public void Left(int amount)
+    {
+        // Since we only care about zeroes, the actual value is irrelevant. -1 is the same as 99.
+        Value = (Value - amount) % NumberCount; 
+
+        if (Value == 0)
+        {
+            Zeroes++;
+        }
+    }
+
+    public void Right(int amount)
+    {
+        Value = (Value + amount) % NumberCount;
+
+        if (Value == 0)
+        {
+            Zeroes++;
+        }
+    }
+}
