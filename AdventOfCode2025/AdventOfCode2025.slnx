@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/.git/">
+    <File Path="../.gitignore" />
+  </Folder>
   <Project Path="Day1/Day1.csproj" />
   <Project Path="Day2/Day2.csproj" Id="5c37d086-d9fa-45da-90e8-fcec15c8e2de" />
 </Solution>
