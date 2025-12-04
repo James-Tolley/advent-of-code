@@ -5,7 +5,7 @@
 var width = map[0].Length;
 var height = map.Length;
 
-int rolls = CountRolls(map, width, height, true, true);
+int rolls = CountRolls(map, width, height, true);
 DrawMap(map, width, height);
 Console.WriteLine(rolls);
 return 0;
@@ -23,7 +23,7 @@ static void DrawMap(char[][] map, int width, int height)
     Console.WriteLine();
 }
 
-static int CountRolls(char[][] map, int width, int height, bool removeRolls = false, bool recurse = false)
+static int CountRolls(char[][] map, int width, int height, bool recurse = false)
 {
     var rolls = 0;
     for (var y = 0; y < height; y++)
@@ -60,7 +60,7 @@ static int CountRolls(char[][] map, int width, int height, bool removeRolls = fa
 
             if (adjacent < 4)
             {
-                if (removeRolls)
+                if (recurse)
                 {
                     map[y][x] = '.';
                 }
@@ -69,9 +69,9 @@ static int CountRolls(char[][] map, int width, int height, bool removeRolls = fa
         }
     }
 
-    if (removeRolls && rolls > 0 && recurse)
+    if (rolls > 0 && recurse)
     {
-        rolls += CountRolls(map, width, height, true, true);
+        rolls += CountRolls(map, width, height, true);
     }
 
     return rolls;
