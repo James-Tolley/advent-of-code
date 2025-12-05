@@ -9,19 +9,11 @@ async Task<long> CountAvailableFresh(string filename)
     var fs = File.OpenText(filename);
     var ranges = await ReadRanges(fs);
 
-    var countFresh = 0;
-    var line = await fs.ReadLineAsync();
-    while (string.IsNullOrEmpty(line) == false)
-    {
-        var id = long.Parse(line);
-
-        if (ranges.FirstOrDefault(r => id >= r[0] && id <= r[1]) is not null)
-        {
-            countFresh++;
-        }
-
-        line = await fs.ReadLineAsync();
-    }
+    var countFresh = fs.ReadToEnd()
+        .Split("\n")
+        .Where(s => !string.IsNullOrWhiteSpace(s))
+        .Select(long.Parse)
+        .Count(id => ranges.FirstOrDefault(r => id >= r[0] && id <= r[1]) is not null);
 
     return countFresh;
 }
@@ -55,11 +47,10 @@ List<long[]> TrimRanges(List<long[]> ranges)
 {
     var trimmedRanges = new List<long[]>();
     var rangesTrimmed = false;
-    foreach (var range in ranges)
+    for (var i = 0; i < ranges.Count; i++)
     {
+        var range = ranges[i];
         var currentRange = new long[] { range[0], range[1] };
-        List<long[]> newRanges = new();
-
         foreach (var testRange in trimmedRanges)
         {
             if (currentRange[0] <= testRange[1] && currentRange[1] >= testRange[0])
@@ -80,14 +71,12 @@ List<long[]> TrimRanges(List<long[]> ranges)
                 if (currentRange[0] < testRange[0] && currentRange[1] > testRange[1])
                 {
                     // middle overlap - create a second range
-                    long[] newRange = [testRange[1] + 1, currentRange[1]];
-                    newRanges.Add(newRange);
+                    ranges.Add([testRange[1] + 1, currentRange[1]]);
                     currentRange[1] = testRange[0] - 1;
                 } 
             }
         }
 
-        trimmedRanges.AddRange(newRanges);
         if (currentRange[1] >= currentRange[0])
         {
             trimmedRanges.Add(currentRange);
@@ -96,6 +85,3 @@ List<long[]> TrimRanges(List<long[]> ranges)
 
     return rangesTrimmed ? TrimRanges(trimmedRanges) : trimmedRanges;
 }
-
-
-
