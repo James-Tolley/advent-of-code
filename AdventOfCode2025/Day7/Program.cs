@@ -1,14 +1,14 @@
-﻿var map = File.ReadAllLines("input.txt")
-    .Select(s => s.ToCharArray())
-    .ToArray();
- 
+﻿using Shared;
+
+var map = Map.Load("input.txt");
+
 var start = map[0].IndexOf('S');
 
 // Memoization table for quantum beam timelines
 long[,] memo = new long[map.Length, map[0].Length];
 
 var splits = FireQuantumBeam(map, start, 0);
-DrawMap(map);
+Map.Draw(map);
 Console.WriteLine(splits);
 
 
@@ -67,17 +67,4 @@ long FireQuantumBeam(char[][] map, int x, int y)
     }
 
     return 0;
-}
-
-static void DrawMap(char[][] map)
-{
-    for (var y = 0; y < map.Length; y++)
-    {
-        for (var x = 0; x < map[y].Length; x++)
-        {
-            Console.Write(map[y][x]);
-        }
-        Console.WriteLine();
-    }
-    Console.WriteLine();
 }

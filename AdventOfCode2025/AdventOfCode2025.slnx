@@ -9,4 +9,5 @@
   <Project Path="Day5/Day5.csproj" Id="1061bbbd-2ed7-4d87-bbd0-3302bc0e8470" />
   <Project Path="Day6/Day6.csproj" Id="a1671e0c-627c-4ead-a206-e62c7469cf1a" />
   <Project Path="Day7/Day7.csproj" Id="b12d3a23-9581-4c1a-bd95-bd6ac32a7554" />
+  <Project Path="Shared/Shared.csproj" Id="c8126987-5c65-43c4-abdc-d19d4f8d7fa7" />
 </Solution>

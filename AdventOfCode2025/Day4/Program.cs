@@ -1,27 +1,12 @@
-﻿var map = File.ReadAllLines("input.txt")
-    .Select(s => s.ToCharArray())
-    .ToArray();
+﻿var map = Shared.Map.Load("input.txt");
 
 var width = map[0].Length;
 var height = map.Length;
 
 int rolls = CountRolls(map, width, height, true);
-DrawMap(map, width, height);
+Shared.Map.Draw(map);
 Console.WriteLine(rolls);
 return 0;
-
-static void DrawMap(char[][] map, int width, int height)
-{
-    for (var y = 0; y < height; y++)
-    {
-        for (var x = 0; x < width; x++)
-        {
-            Console.Write(map[y][x]);
-        }
-        Console.WriteLine();
-    }
-    Console.WriteLine();
-}
 
 static int CountRolls(char[][] map, int width, int height, bool recurse = false)
 {
