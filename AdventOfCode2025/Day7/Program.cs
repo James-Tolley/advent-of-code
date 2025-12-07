@@ -4,7 +4,10 @@
  
 var start = map[0].IndexOf('S');
 
-var splits = FireBeam(map, start, 0);
+// Memoization table for quantum beam timelines
+long[,] memo = new long[map.Length, map[0].Length];
+
+var splits = FireQuantumBeam(map, start, 0);
 DrawMap(map);
 Console.WriteLine(splits);
 
@@ -37,11 +40,40 @@ int FireBeam(char[][] map, int x, int y)
     return 0;
 }
 
+long FireQuantumBeam(char[][] map, int x, int y)
+{
+    while (y < map.Length && map[y][x] != '^')
+    {
+        map[y][x] = '|';
+        y++;
+    }
+
+    if (y >= map.Length)
+    {
+        // reached the bottom
+        return 1;
+    }
+
+    if (map[y][x] == '^')
+    {
+        if (memo[y, x] != 0)
+        {
+            return memo[y, x];
+        }
+        //split
+        var timelines = FireQuantumBeam(map, x - 1, y) + FireQuantumBeam(map, x + 1, y);
+        memo[y, x] = timelines;
+        return timelines;
+    }
+
+    return 0;
+}
+
 static void DrawMap(char[][] map)
 {
     for (var y = 0; y < map.Length; y++)
     {
-        for (var x = 0; x < map[x].Length; x++)
+        for (var x = 0; x < map[y].Length; x++)
         {
             Console.Write(map[y][x]);
         }
