@@ -4,7 +4,9 @@
 
     public int Value { get; private set; } = initialVal;
 
-    public int Zeroes { get; private set; } = 0;
+    public int Part1Zeroes { get; private set; } = 0;
+
+    public int Part2Zeroes { get; private set; } = 0;
 
     public void ExecuteSequence(string[] directions)
     {
@@ -26,22 +28,45 @@
 
     public void Left(int amount)
     {
-        // Since we only care about zeroes, the actual value is irrelevant. -1 is the same as 99.
-        Value = (Value - amount) % NumberCount; 
+
+        for (int i = 0; i < amount; i++)
+        {
+            Value--;
+            if (Value == -1)
+            {
+                Value = NumberCount - 1;
+            }
+            else if (Value == 0)
+            {
+                Part2Zeroes++;
+            }
+        }
 
         if (Value == 0)
         {
-            Zeroes++;
+            Part1Zeroes++;
         }
     }
 
     public void Right(int amount)
     {
-        Value = (Value + amount) % NumberCount;
+        for (int i = 0; i < amount; i++)
+        {
+            Value++;
+            if (Value == NumberCount)
+            {
+                Value = 0;
+            }
+            
+            if (Value == 0)
+            {
+                Part2Zeroes++;
+            }
+        }
 
         if (Value == 0)
         {
-            Zeroes++;
+            Part1Zeroes++;
         }
     }
 }

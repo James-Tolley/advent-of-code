@@ -4,4 +4,5 @@ var lines = File.ReadAllLines("input.txt");
     
 dial.ExecuteSequence(lines);
 
-Console.WriteLine($"Zeroes: {dial.Zeroes}");
+Console.WriteLine($"Part 2 Zeroes: {dial.Part1Zeroes}");
+Console.WriteLine($"Part 2 Zeroes: {dial.Part2Zeroes}");
