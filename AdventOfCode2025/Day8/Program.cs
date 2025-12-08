@@ -1,5 +1,5 @@
 ﻿
-var nodes = File.ReadAllLines("input.txt")
+List<Node> nodes = File.ReadAllLines("input.txt")
     .Select(line => line.Split(','))
     .Select(parts => new Node(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2])))
     .ToList();
@@ -13,59 +13,48 @@ for (var i = 1; i < nodes.Count; i++)
     {
         var node1 = nodes[i];
         var node2 = nodes[j];
-        var distance = Math.Pow(node1.X - node2.X, 2) +
-                        Math.Pow(node1.Y - node2.Y, 2) +
-                        Math.Pow(node1.Z - node2.Z, 2);
-        distances.Add(new NodeDistance(node1, node2, distance));
+        distances.Add(new NodeDistance(node1, node2, node1.DistanceSquaredTo(node2)));
     }
 }
 
-const int number = 1000;
+// Part 1
+//BuildCircuits(nodes, distances.OrderBy(nd => nd.Distance).Take(1000));
 
-var closest = distances
-    .OrderBy(nd => nd.Distance)
-    .Take(number)
-    .ToList();
+// Part 2
+BuildCircuits(nodes, distances.OrderBy(nd => nd.Distance));
 
-foreach (var distance in closest)
+void BuildCircuits(List<Node> nodes, IEnumerable<NodeDistance> nodeDistances)
 {
-    Console.WriteLine($"Node1: ({distance.Node1.X}, {distance.Node1.Y}, {distance.Node1.Z}) " +
-                      $"Node2: ({distance.Node2.X}, {distance.Node2.Y}, {distance.Node2.Z}) " +
-                      $"Distance: {Math.Sqrt(distance.Distance)}");
-}
+    var circuits = nodes.Select(n => n.Circuit).ToList();
 
-
-// build circuits
-
-var circuits = nodes.Select(n => n.Circuit).ToList();
-
-foreach (var item in closest)
-{
-    if (item.Node1.Circuit != item.Node2.Circuit)
+    foreach (var item in nodeDistances)
     {
-        var circuit1 = item.Node1.Circuit;
-        var circuit2 = item.Node2.Circuit;
-
-        // merge circuits
-        circuit1.AddRange(circuit2);
-        foreach (var node in circuit2)
+        if (item.Node1.Circuit != item.Node2.Circuit)
         {
-            node.Circuit = circuit1;
+            var circuit1 = item.Node1.Circuit;
+            var circuit2 = item.Node2.Circuit;
+
+            // merge circuits
+            circuit1.AddRange(circuit2);
+            foreach (var node in circuit2)
+            {
+                node.Circuit = circuit1;
+            }
+            circuits.Remove(circuit2);
         }
-        circuits.Remove(circuit2);
+
+        if (circuits.Count == 1)
+        {
+            // Part 2
+            Console.WriteLine($"Last two nodes.X product: {(long)item.Node1.X * item.Node2.X}");
+            return;
+        }
     }
+
+    // Part 1
+    var largestCircuits = circuits.OrderByDescending(c => c.Count).Take(3).Aggregate(1, (x, c) => x *= c.Count);
+    Console.WriteLine($"Largest 3 circuits product: {largestCircuits}");
 }
-
-foreach (var circuit in circuits)
-{
-    Console.WriteLine($"Circuit size: {circuit.Count}");
-}
-
-var largestCircuits = circuits.OrderByDescending(c => c.Count).Take(3).Aggregate(1, (x, c) => x *= c.Count);
-
-Console.WriteLine($"Largest circuits product: {largestCircuits}");
-
-return 0;
 
 
 record NodeDistance(Node Node1, Node Node2, double Distance);
@@ -82,6 +71,9 @@ class Node
     public int X { get; } 
     public int Y { get; } 
     public int Z { get; } 
+
+    public double DistanceSquaredTo(Node other) => 
+        Math.Pow(X - other.X, 2) + Math.Pow(Y - other.Y, 2) + Math.Pow(Z - other.Z, 2);
 
     public List<Node> Circuit { get; set; }
 
